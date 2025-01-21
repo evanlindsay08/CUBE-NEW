@@ -41,8 +41,20 @@
             </div>
         </div>
     </div>
-    <!-- Add Solana wallet adapter -->
+
+    <!-- Add Phantom detection -->
+    <script>
+        // Check if Phantom is installed
+        const isPhantomInstalled = window.solana && window.solana.isPhantom;
+        
+        if (!isPhantomInstalled) {
+            console.log('Please install Phantom wallet to use this app');
+        }
+    </script>
+
+    <!-- Add Solana Web3 -->
     <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+    
     <!-- Add our scripts -->
     <script src="wallet.js"></script>
     <script src="scripts.js"></script>

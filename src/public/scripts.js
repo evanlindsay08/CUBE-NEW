@@ -1,4 +1,13 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // Wait for Phantom to be injected
+    let attempts = 0;
+    const maxAttempts = 50;
+    
+    while (!window.solana && attempts < maxAttempts) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        attempts++;
+    }
+
     const connectBtn = document.querySelector('.connect-btn');
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.getElementById('sendButton');
@@ -10,6 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Connect button handler
     connectBtn.addEventListener('click', async () => {
+        if (!window.solana) {
+            window.open('https://phantom.app/', '_blank');
+            return;
+        }
         await window.walletManager.connect();
     });
 
