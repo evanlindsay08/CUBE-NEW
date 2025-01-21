@@ -57,6 +57,12 @@
     
     <!-- Add our scripts -->
     <script src="wallet.js"></script>
+    <script>
+        // Ensure WalletManager is initialized
+        if (typeof WalletManager === 'undefined') {
+            console.error('WalletManager failed to load');
+        }
+    </script>
     <script src="scripts.js"></script>
 </body>
 </html> 

@@ -235,5 +235,10 @@ class WalletManager {
     }
 }
 
+// Make WalletManager available globally
+window.WalletManager = WalletManager;
+
 // Create global instance
-window.walletManager = new WalletManager(); 
+if (!window.walletManager) {
+    window.walletManager = new WalletManager();
+} 

@@ -8,6 +8,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         attempts++;
     }
 
+    // Initialize WalletManager if it doesn't exist
+    if (!window.walletManager) {
+        window.walletManager = new WalletManager();
+    }
+
     const connectBtn = document.querySelector('.connect-btn');
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.getElementById('sendButton');
@@ -19,11 +24,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Connect button handler
     connectBtn.addEventListener('click', async () => {
-        if (!window.solana) {
-            window.open('https://phantom.app/', '_blank');
-            return;
+        try {
+            if (!window.solana) {
+                window.walletManager.showNotification('Please install Phantom wallet');
+                window.open('https://phantom.app/', '_blank');
+                return;
+            }
+            if (!window.walletManager) {
+                console.error('WalletManager not initialized');
+                return;
+            }
+            await window.walletManager.connect();
+        } catch (error) {
+            console.error('Connection error:', error);
+            window.walletManager.showNotification('Failed to connect wallet');
         }
-        await window.walletManager.connect();
     });
 
     // Chat message handlers
