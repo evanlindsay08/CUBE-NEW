@@ -5,6 +5,4 @@ interface Window {
         on(event: string, callback: () => void): void;
         isPhantom?: boolean;
     };
-    walletManager?: any;
-    WalletManager?: any;
 } 

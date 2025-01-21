@@ -10,9 +10,4 @@ restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
 
 [deploy.envs]
-PORT = "3000"
-NODE_ENV = "production"
-
-[[deploy.services]]
-protocol = "wss"
-internal_port = "3000" 
+PORT = "3000" 

@@ -917,13 +917,13 @@ main {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.8);
     display: flex;
     justify-content: center;
     align-items: center;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease;
+    transition: all 0.3s cubic-bezier(.22,.61,.36,1);
     z-index: 1000;
 }
 
@@ -933,12 +933,13 @@ main {
 }
 
 .wallet-modal .modal-content {
-    background: #1a1a1a;
-    padding: 20px;
-    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.95);
+    border: 1px solid #333;
+    padding: 2rem;
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(.22,.61,.36,1);
     min-width: 300px;
-    transform: scale(0.7);
-    transition: transform 0.3s ease;
+    position: relative;
 }
 
 .wallet-modal.show .modal-content {
@@ -946,38 +947,155 @@ main {
 }
 
 .wallet-modal h3 {
-    margin: 0 0 20px 0;
     color: #fff;
+    margin-bottom: 1.5rem;
+    font-family: monospace;
     text-align: center;
 }
 
 .wallet-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 1rem;
+    min-width: 250px;
 }
 
 .wallet-option {
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    background: #333;
-    color: white;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid #444;
+    color: #fff;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: all 0.15s ease;
+    font-family: monospace;
+    width: 100%;
+    font-size: 1rem;
 }
 
 .wallet-option:hover {
-    background: #444;
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+}
+
+.wallet-option img {
+    width: 24px;
+    height: 24px;
 }
 
 .close-modal {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 1rem;
+    right: 1rem;
     background: none;
     border: none;
-    color: #fff;
-    font-size: 20px;
+    color: #666;
     cursor: pointer;
+    font-size: 1.2rem;
+    transition: color 0.15s ease;
+}
+
+.close-modal:hover {
+    color: #fff;
+}
+
+.coming-soon-console {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9) perspective(1000px) rotateX(45deg);
+    background: rgba(0, 0, 0, 0.95);
+    border: 1px solid #333;
+    padding: 3rem;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s cubic-bezier(.22,.61,.36,1);
+    min-width: 800px;
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.1);
+}
+
+.coming-soon-console.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1) perspective(1000px) rotateX(0deg);
+}
+
+.coming-soon-console .console-content {
+    text-align: center;
+    font-family: monospace;
+    white-space: pre;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.coming-soon-console .ascii-art {
+    color: #0f0;
+    margin: 0;
+    line-height: 1.2;
+    font-size: 12px;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    animation: comingSoonGlitch 0.3s infinite;
+    transform: scale(1, 1.2);
+}
+
+@keyframes comingSoonGlitch {
+    0% { 
+        opacity: 1;
+        transform: scale(1, 1.2) translate(0);
+        text-shadow: 2px 0 #ff0000, -2px 0 #00ff00;
+    }
+    25% { 
+        opacity: 0.8;
+        transform: scale(1, 1.2) translate(-2px, 2px);
+        text-shadow: -2px 0 #ff0000, 2px 0 #00ff00;
+    }
+    50% { 
+        opacity: 1;
+        transform: scale(1, 1.2) translate(2px, -2px);
+        text-shadow: 2px 0 #00ff00, -2px 0 #ff0000;
+    }
+    75% { 
+        opacity: 0.8;
+        transform: scale(1, 1.2) translate(-2px, 2px);
+        text-shadow: -2px 0 #00ff00, 2px 0 #ff0000;
+    }
+    100% { 
+        opacity: 1;
+        transform: scale(1, 1.2) translate(0);
+        text-shadow: 2px 0 #ff0000, -2px 0 #00ff00;
+    }
+}
+
+.coming-soon-console::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid #0f0;
+    animation: borderPulse 2s infinite;
+    pointer-events: none;
+}
+
+@keyframes borderPulse {
+    0% { 
+        box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+        border-color: rgba(0, 255, 0, 0.5);
+    }
+    50% { 
+        box-shadow: 0 0 30px rgba(0, 255, 0, 0.8);
+        border-color: rgba(0, 255, 0, 0.8);
+    }
+    100% { 
+        box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+        border-color: rgba(0, 255, 0, 0.5);
+    }
 } 

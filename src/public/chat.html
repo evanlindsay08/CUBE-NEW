@@ -23,6 +23,7 @@
                         </svg>
                     </div>
                 </a>
+                <a href="#" class="connect-btn">Set Username</a>
             </div>
         </nav>
 
@@ -40,73 +41,10 @@
             </div>
         </div>
     </div>
-
-    <!-- Add Phantom detection -->
-    <script>
-        // Check if Phantom is installed
-        const isPhantomInstalled = window.solana && window.solana.isPhantom;
-        
-        if (!isPhantomInstalled) {
-            console.log('Please install Phantom wallet to use this app');
-        }
-    </script>
-
-    <!-- Scripts at the bottom of body -->
-    <script>
-        // Global notification function
-        function showNotification(message) {
-            const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            
-            setTimeout(() => notification.classList.add('show'), 0);
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => notification.remove(), 600);
-            }, 2000);
-        }
-
-        // Global error handler
-        window.onerror = function(msg, url, line) {
-            console.error(`Error: ${msg}\nURL: ${url}\nLine: ${line}`);
-            showNotification('An error occurred');
-            return false;
-        };
-    </script>
+    <!-- Add Solana wallet adapter -->
     <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
-    <script>
-        // Global notification function
-        function showNotification(message) {
-            const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            
-            setTimeout(() => notification.classList.add('show'), 0);
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => notification.remove(), 600);
-            }, 2000);
-        }
-    </script>
+    <!-- Add our scripts -->
     <script src="wallet.js"></script>
-    <script>
-        // Initialize connect button
-        document.addEventListener('DOMContentLoaded', () => {
-            const connectBtn = document.querySelector('.connect-btn');
-            if (connectBtn) {
-                connectBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (window.walletManager) {
-                        window.walletManager.connect();
-                    }
-                });
-            }
-        });
-    </script>
     <script src="scripts.js"></script>
 </body>
 </html> 

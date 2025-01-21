@@ -2,7 +2,6 @@ import express, { Request, Response } from 'express';
 import path from 'path';
 import { WebSocketServer, WebSocket } from 'ws';
 import http from 'http';
-import https from 'https';
 
 interface ChatMessage {
     type: 'message' | 'status';
@@ -28,19 +27,10 @@ const COLORS = [
 ];
 
 const app = express();
-const port = process.env.PORT || 3000;
-
-// Create server based on environment
-const server = process.env.NODE_ENV === 'production'
-    ? https.createServer({
-        // Add your SSL certificates here if needed
-        // key: fs.readFileSync('path/to/key.pem'),
-        // cert: fs.readFileSync('path/to/cert.pem')
-    }, app)
-    : http.createServer(app);
-
+const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
+const port = process.env.PORT || 3000;
 let connectedClients = new Set<WebSocket>();
 let messageHistory: ChatMessage[] = [];
 const userColors = new Map<string, string>();
@@ -48,10 +38,7 @@ const MAX_MESSAGES = 100;
 
 // Health check endpoint
 app.get('/health', (req: Request, res: Response) => {
-    res.status(200).json({
-        status: 'healthy',
-        websocket: wss.clients.size >= 0 ? 'operational' : 'error'
-    });
+    res.status(200).send('OK');
 });
 
 // Serve static files from the public directory
@@ -146,13 +133,9 @@ function broadcastUserCount() {
 // Error handling
 app.use((err: Error, req: Request, res: Response, next: Function) => {
     console.error(err.stack);
-    res.status(500).json({
-        error: 'Internal Server Error',
-        message: process.env.NODE_ENV === 'development' ? err.message : undefined
-    });
+    res.status(500).send('Something broke!');
 });
 
 server.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-    console.log(`WebSocket server running on ${process.env.NODE_ENV === 'production' ? 'wss://' : 'ws://'}`);
+    console.log(`Server running at http://localhost:${port}`);
 }); 
