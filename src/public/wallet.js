@@ -184,16 +184,29 @@ class WalletManager {
     }
 
     initializeWebSocket() {
-        this.ws = new WebSocket(`ws://${window.location.host}`);
+        // Use secure WebSocket if the page is loaded over HTTPS
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${protocol}//${window.location.host}`;
         
-        this.ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            if (data.type === 'status') {
-                document.getElementById('userCount').textContent = data.content;
-            } else if (data.type === 'message') {
-                this.addMessageToChat(data);
-            }
-        };
+        try {
+            this.ws = new WebSocket(wsUrl);
+            
+            this.ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.type === 'status') {
+                    document.getElementById('userCount')?.textContent = data.content;
+                } else if (data.type === 'message') {
+                    this.addMessageToChat(data);
+                }
+            };
+
+            this.ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                this.showNotification('Failed to connect to chat');
+            };
+        } catch (error) {
+            console.error('WebSocket initialization error:', error);
+        }
     }
 
     sendMessage(content) {
