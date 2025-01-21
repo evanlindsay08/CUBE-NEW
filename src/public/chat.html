@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUBE - Chat</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="console-box">
+        <nav>
+            <div class="nav-links">
+                <a href="/" class="box-link">Home</a>
+                <a href="/chat" class="box-link active">Chat</a>
+                <a href="#" class="box-link">Art Agent</a>
+                <a href="#" class="box-link">Copy Writing Agent</a>
+            </div>
+            <div class="nav-right">
+                <a href="#" class="twitter-icon">
+                    <div class="rainbow-border">
+                        <svg viewBox="0 0 24 24" width="16" height="16">
+                            <path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                        </svg>
+                    </div>
+                </a>
+                <a href="#" class="connect-btn">Connect</a>
+            </div>
+        </nav>
+
+        <div class="chat-console">
+            <div class="chat-header">
+                <span class="chat-title">[CUBE Global Chat]</span>
+                <span class="chat-status">Users Online: <span id="userCount">0</span></span>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <!-- Messages will be inserted here -->
+            </div>
+            <div class="chat-input">
+                <input type="text" id="messageInput" placeholder="Type your message..." maxlength="280">
+                <button id="sendButton">Send</button>
+            </div>
+        </div>
+    </div>
+    <!-- Add Solana wallet adapter -->
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+    <!-- Add our scripts -->
+    <script src="wallet.js"></script>
+    <script src="scripts.js"></script>
+</body>
+</html> 

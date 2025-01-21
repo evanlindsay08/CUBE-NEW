@@ -1,0 +1,1004 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #000;
+    color: #fff;
+    font-family: monospace;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.console-box {
+    background-color: rgba(0, 0, 0, 0.9);
+    border: 1px solid #333;
+    width: 95%;
+    max-width: 1125px;
+    margin: 1rem;
+    padding: 1rem;
+    animation: 
+        warpIn 1.2s cubic-bezier(.22,.61,.36,1) forwards,
+        glowFade 1.5s ease-out forwards,
+        subtleConsoleGlitch 4s ease-in-out infinite;
+    animation-delay: 0s, 0s, 1.2s;
+    transform-origin: center left;
+    backface-visibility: hidden;
+    will-change: transform, opacity, filter;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.35rem 0.8rem;
+    border-bottom: 1px solid rgba(51, 51, 51, 0.5);
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.nav-links {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.box-link {
+    border: 1px solid #666;
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+    transition: all 0.15s ease;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.box-link:hover, .box-link.active {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5);
+    animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+}
+
+.connect-btn {
+    border: 1px solid #fff;
+    padding: 0.4rem 1.2rem;
+    border-radius: 0;
+    font-size: 0.9rem;
+    background: rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease;
+    color: #fff;
+    font-weight: 500;
+}
+
+.connect-btn:hover {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.twitter-icon {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+    border-radius: 4px;
+}
+
+.rainbow-border {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rainbow-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 4px;
+    padding: 1px;
+    background: conic-gradient(
+        from var(--angle),
+        #ff0000,
+        #ff8000,
+        #ffff00,
+        #80ff00,
+        #00ff00,
+        #00ff80,
+        #00ffff,
+        #0080ff,
+        #0000ff,
+        #8000ff,
+        #ff00ff,
+        #ff0080,
+        #ff0000
+    );
+    -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: borderFlow 2s linear infinite;
+}
+
+@property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@keyframes borderFlow {
+    from {
+        --angle: 0deg;
+    }
+    to {
+        --angle: 360deg;
+    }
+}
+
+.rainbow-border svg {
+    color: #fff;
+    z-index: 1;
+    position: relative;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+}
+
+.ascii-container {
+    text-align: center;
+    width: 100%;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    background: transparent;
+}
+
+.ascii-art {
+    font-size: 0.9rem;
+    margin: 0;
+    white-space: pre;
+    line-height: 1.3;
+    letter-spacing: 1px;
+    font-family: monospace;
+    font-weight: bold;
+    transform: scale(1, 1.1);
+    animation: asciiGlitch 3s linear infinite;
+    position: relative;
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+    background: transparent;
+    display: inline-block;
+    padding: 0;
+}
+
+.ascii-art::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        transparent 50%,
+        rgba(255, 255, 255, 0.04) 50%
+    ), transparent;
+    background-size: 100% 3px;
+    pointer-events: none;
+    animation: scanline 10s linear infinite;
+    z-index: -1;
+}
+
+.description {
+    margin: 1.5rem 0;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.info-text {
+    color: rgba(255, 255, 255, 0.9);
+    margin: 1.5rem 0;
+    line-height: 1.4;
+    margin-bottom: 0;
+}
+
+.info-text p {
+    margin: 0.4rem 0;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.phase-buttons {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .phase-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .nav-links {
+        gap: 1rem;
+    }
+}
+
+.phase-boxes {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+}
+
+.phase-box {
+    position: relative;
+    border: 1px solid #333;
+    padding: 0.4rem 1.2rem;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(0, 0, 0, 0.5);
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.cube-mini {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0.3rem;
+    font-weight: bold;
+    display: inline-block;
+    animation: rotateCube 4s linear infinite;
+}
+
+@keyframes rotateCube {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.phase-box:hover .cube-mini {
+    color: #fff;
+}
+
+.phase-box:hover {
+    border-color: #fff;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.phase-box:hover .cube-mini {
+    color: #fff;
+}
+
+.tooltip {
+    position: absolute;
+    top: -130px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.95);
+    border: 1px solid #333;
+    padding: 1rem;
+    width: 250px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.tooltip ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tooltip li {
+    position: relative;
+    padding-left: 0;
+    margin: 8px 0;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+.tooltip li::before {
+    display: none;
+}
+
+.phase-box:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    top: -140px;
+}
+
+.tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 10px;
+    height: 10px;
+    background: rgba(0, 0, 0, 0.95);
+    border-right: 1px solid #333;
+    border-bottom: 1px solid #333;
+}
+
+/* Add keyframes for glitch effect */
+@keyframes glitch {
+    0% {
+        transform: translate(0);
+        text-shadow: none;
+    }
+    20% {
+        transform: translate(-2px, 2px);
+        text-shadow: 2px 0 #ff0080, -2px 0 #0ff;
+    }
+    40% {
+        transform: translate(-2px, -2px);
+        text-shadow: 2px 0 #0ff, -2px 0 #ff0080;
+    }
+    60% {
+        transform: translate(2px, 2px);
+        text-shadow: 2px 0 #00ff00, -2px 0 #ff0080;
+    }
+    80% {
+        transform: translate(2px, -2px);
+        text-shadow: 2px 0 #ff0080, -2px 0 #00ff00;
+    }
+    100% {
+        transform: translate(0);
+        text-shadow: none;
+    }
+}
+
+/* Add glitch effect to connect button too */
+.connect-btn:hover {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+}
+
+/* Add a subtle glitch effect to active state */
+.box-link.active {
+    animation: glitch 0.4s cubic-bezier(.25, .46, .45, .94) both infinite;
+}
+
+/* Add new keyframes for ASCII shimmer glitch */
+@keyframes asciiGlitch {
+    0% {
+        opacity: 1;
+        text-shadow: none;
+        transform: translate(0);
+    }
+    2% {
+        opacity: 1;
+        text-shadow: 3px 0 #0ff, -3px 0 #ff0080;
+        transform: translate(-2px, 1px);
+    }
+    4% {
+        opacity: 0.75;
+        text-shadow: none;
+        transform: translate(2px, -1px);
+    }
+    6% {
+        opacity: 1;
+        text-shadow: -3px 0 #0ff, 3px 0 #ff0080;
+        transform: translate(-1px, 2px);
+    }
+    8% {
+        opacity: 0.9;
+        text-shadow: none;
+        transform: translate(0);
+    }
+    15% {
+        opacity: 1;
+    }
+    16% {
+        opacity: 0.8;
+        text-shadow: 2px 0 #00ff00, -2px 0 #ff0080;
+    }
+    17% {
+        opacity: 1;
+    }
+    40% {
+        opacity: 1;
+        text-shadow: none;
+    }
+    42% {
+        opacity: 0.7;
+        text-shadow: 2px 0 #00ff00, -2px 0 #0ff;
+        transform: translate(1px, -1px);
+    }
+    44% {
+        opacity: 1;
+        text-shadow: none;
+        transform: translate(0);
+    }
+    80% {
+        opacity: 1;
+    }
+    82% {
+        opacity: 0.8;
+        text-shadow: -2px 0 #ff0080, 2px 0 #0ff;
+        transform: translate(-1px, 1px);
+    }
+    84% {
+        opacity: 1;
+        text-shadow: none;
+        transform: translate(0);
+    }
+    100% {
+        opacity: 1;
+        text-shadow: none;
+    }
+}
+
+/* Add scanline animation */
+@keyframes scanline {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(20px);
+    }
+}
+
+/* Update console warp animation */
+@keyframes warpIn {
+    0% {
+        transform: perspective(1000px) translateX(-100vw) rotateY(45deg);
+        opacity: 0;
+        filter: brightness(2);
+    }
+    60% {
+        transform: perspective(1000px) translateX(5%) rotateY(-5deg);
+        opacity: 0.8;
+        filter: brightness(1.5);
+    }
+    80% {
+        transform: perspective(1000px) translateX(-2%) rotateY(2deg);
+        opacity: 0.9;
+        filter: brightness(1.2);
+    }
+    100% {
+        transform: perspective(1000px) translateX(0) rotateY(0);
+        opacity: 1;
+        filter: brightness(1);
+    }
+}
+
+/* Update glow animation */
+@keyframes glowFade {
+    0% {
+        box-shadow: 0 0 50px rgba(255, 255, 255, 0.3);
+    }
+    100% {
+        box-shadow: none;
+    }
+}
+
+/* Add subtle console glitch animation */
+@keyframes subtleConsoleGlitch {
+    0% {
+        transform: translate(0) skew(0deg);
+        filter: none;
+    }
+    1% {
+        transform: translate(-2px, 1px) skew(0.5deg);
+        filter: brightness(1.1);
+    }
+    2% {
+        transform: translate(0) skew(0deg);
+        filter: none;
+    }
+    45% {
+        transform: translate(0) skew(0deg);
+        filter: none;
+    }
+    46% {
+        transform: translate(1px, -1px) skew(-0.2deg);
+        filter: brightness(1.05) hue-rotate(1deg);
+    }
+    47% {
+        transform: translate(0) skew(0deg);
+        filter: none;
+    }
+    90% {
+        transform: translate(0) skew(0deg);
+        filter: none;
+    }
+    91% {
+        transform: translate(-1px, 1px) skew(0.3deg);
+        filter: brightness(1.07);
+    }
+    92% {
+        transform: translate(0) skew(0deg);
+        filter: none;
+    }
+    100% {
+        transform: translate(0) skew(0deg);
+        filter: none;
+    }
+}
+
+/* Chat container animation */
+@keyframes chatWarpIn {
+    0% {
+        transform: perspective(1000px) translateX(-100vw) rotateY(45deg);
+        opacity: 0;
+        filter: brightness(2);
+    }
+    60% {
+        transform: perspective(1000px) translateX(5%) rotateY(-5deg);
+        opacity: 0.8;
+        filter: brightness(1.5);
+    }
+    80% {
+        transform: perspective(1000px) translateX(-2%) rotateY(2deg);
+        opacity: 0.9;
+        filter: brightness(1.2);
+    }
+    100% {
+        transform: perspective(1000px) translateX(0) rotateY(0);
+        opacity: 1;
+        filter: brightness(1);
+    }
+}
+
+.chat-container {
+    background-color: rgba(0, 0, 0, 0.9);
+    border: 1px solid #333;
+    width: 95%;
+    max-width: 1125px;
+    margin: 1rem;
+    padding: 1rem;
+    animation: 
+        chatWarpIn 1.2s cubic-bezier(.22,.61,.36,1) forwards,
+        glowFade 1.5s ease-out forwards,
+        subtleConsoleGlitch 4s ease-in-out infinite;
+    animation-delay: 0s, 0s, 1.2s;
+    transform-origin: center left;
+    backface-visibility: hidden;
+    will-change: transform, opacity, filter;
+    display: flex;
+    flex-direction: column;
+    height: 70vh;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    border: 1px solid #333;
+    background: rgba(0, 0, 0, 0.5);
+    margin-bottom: 1rem;
+}
+
+.chat-input {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid #333;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.chat-input input {
+    flex-grow: 1;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #444;
+    color: #fff;
+    padding: 0.5rem;
+    font-family: monospace;
+}
+
+.chat-input button {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #666;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.chat-input button:hover {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.message {
+    padding: 0.8rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.3rem;
+}
+
+.message .user {
+    font-weight: bold;
+    text-shadow: 0 0 8px currentColor;
+}
+
+.message .timestamp {
+    color: #666;
+    font-size: 0.8rem;
+}
+
+.message .content {
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.4;
+}
+
+@keyframes warpOut {
+    0% {
+        transform: perspective(1000px) translateX(0) rotateY(0);
+        opacity: 1;
+        filter: brightness(1);
+    }
+    100% {
+        transform: perspective(1000px) translateX(100vw) rotateY(-45deg);
+        opacity: 0;
+        filter: brightness(2);
+    }
+}
+
+/* Update chat console styles */
+.chat-console {
+    margin-top: 1rem;
+    padding: 1rem;
+    height: calc(100vh - 150px);
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #333;
+    margin-bottom: 1rem;
+}
+
+.chat-title {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: bold;
+}
+
+.chat-status {
+    color: #666;
+    font-size: 0.8rem;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #333;
+    margin-bottom: 1rem;
+}
+
+.chat-input {
+    display: flex;
+    gap: 0.8rem;
+    padding: 0.8rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #333;
+}
+
+.chat-input input {
+    flex-grow: 1;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid #444;
+    color: #fff;
+    padding: 0.8rem;
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+.chat-input input:focus {
+    outline: none;
+    border-color: #666;
+}
+
+.chat-input button {
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid #666;
+    color: #fff;
+    padding: 0.8rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: monospace;
+}
+
+.chat-input button:hover {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+}
+
+.message {
+    padding: 0.8rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.3rem;
+}
+
+.message .user {
+    font-weight: bold;
+    text-shadow: 0 0 8px currentColor;
+}
+
+.message .timestamp {
+    color: #666;
+    font-size: 0.8rem;
+}
+
+.message .content {
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.4;
+}
+
+/* Update chat warp animation */
+@keyframes chatWarpIn {
+    0% {
+        transform: perspective(1000px) translateX(-100vw) rotateY(45deg) scale(0.9);
+        opacity: 0;
+        filter: brightness(2);
+    }
+    60% {
+        transform: perspective(1000px) translateX(2%) rotateY(-5deg) scale(0.95);
+        opacity: 0.8;
+        filter: brightness(1.5);
+    }
+    80% {
+        transform: perspective(1000px) translateX(-1%) rotateY(2deg) scale(0.98);
+        opacity: 0.9;
+        filter: brightness(1.2);
+    }
+    100% {
+        transform: perspective(1000px) translateX(0) rotateY(0) scale(1);
+        opacity: 1;
+        filter: brightness(1);
+    }
+}
+
+/* Notification styles */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid #333;
+    color: #fff;
+    font-family: monospace;
+    transform: translateX(200%);
+    opacity: 0;
+    transition: all 0.6s cubic-bezier(.22,.61,.36,1);
+    z-index: 1000;
+}
+
+.notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+/* Username modal styles */
+.username-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(.22,.61,.36,1);
+    z-index: 1000;
+}
+
+.username-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: rgba(0, 0, 0, 0.95);
+    border: 1px solid #333;
+    padding: 2rem;
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(.22,.61,.36,1);
+    width: 350px;
+}
+
+.username-modal.show .modal-content {
+    transform: scale(1);
+}
+
+.modal-content h3 {
+    color: #fff;
+    margin-bottom: 1.5rem;
+    font-family: monospace;
+    font-size: 1rem;
+}
+
+.modal-content input {
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid #444;
+    color: #fff;
+    padding: 0.8rem;
+    margin: 1rem 0;
+    width: 100%;
+    font-family: monospace;
+    box-sizing: border-box;
+    font-size: 0.9rem;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.modal-buttons button {
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid #666;
+    color: #fff;
+    padding: 0.8rem 0;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: monospace;
+    flex: 1;
+    font-size: 0.9rem;
+}
+
+.modal-buttons button:hover {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+}
+
+/* Wallet modal styles */
+.wallet-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(.22,.61,.36,1);
+    z-index: 1000;
+}
+
+.wallet-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.wallet-modal .modal-content {
+    background: rgba(0, 0, 0, 0.95);
+    border: 1px solid #333;
+    padding: 2rem;
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(.22,.61,.36,1);
+    min-width: 300px;
+    position: relative;
+}
+
+.wallet-modal.show .modal-content {
+    transform: scale(1);
+}
+
+.wallet-modal h3 {
+    color: #fff;
+    margin-bottom: 1.5rem;
+    font-family: monospace;
+    text-align: center;
+}
+
+.wallet-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 250px;
+}
+
+.wallet-option {
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid #444;
+    color: #fff;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: monospace;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.wallet-option:hover {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+}
+
+.wallet-option img {
+    width: 24px;
+    height: 24px;
+}
+
+.close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: color 0.15s ease;
+}
+
+.close-modal:hover {
+    color: #fff;
+} 
