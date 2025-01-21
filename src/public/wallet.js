@@ -4,7 +4,9 @@ class WalletManager {
         this.username = '';
         this.ws = null;
         this.initializeWallet();
-        this.initializeWebSocket();
+        if (window.location.pathname === '/chat') {
+            this.initializeWebSocket();
+        }
     }
 
     async initializeWallet() {
@@ -249,7 +251,10 @@ class WalletManager {
     }
 }
 
-// Make WalletManager available globally
+// Initialize wallet manager globally
 if (typeof window !== 'undefined') {
-    window.WalletManager = WalletManager;
+    // Initialize wallet manager immediately
+    window.walletManager = new WalletManager();
+    // Signal that initialization is complete
+    window.walletManagerInitialized = true;
 } 

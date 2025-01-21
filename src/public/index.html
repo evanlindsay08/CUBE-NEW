@@ -81,9 +81,28 @@
             </div>
         </main>
     </div>
+    <script>
+        // Check if Phantom is installed
+        const isPhantomInstalled = window.solana && window.solana.isPhantom;
+        
+        if (!isPhantomInstalled) {
+            console.log('Please install Phantom wallet to use this app');
+        }
+    </script>
     <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
-    <script src="https://unpkg.com/@solana/wallet-adapter-phantom@latest/lib/index.iife.min.js"></script>
+    <script>
+        // Define global namespace
+        window.CUBE = {
+            initialized: false,
+            walletManager: null
+        };
+    </script>
     <script src="wallet.js"></script>
+    <script>
+        // Initialize WalletManager
+        window.CUBE.walletManager = new WalletManager();
+        window.CUBE.initialized = true;
+    </script>
     <script src="scripts.js"></script>
 </body>
 </html> 
