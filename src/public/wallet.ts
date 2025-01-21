@@ -5,46 +5,63 @@ import {
     MessageSignerWalletAdapter,
 } from '@solana/wallet-adapter-base';
 
+// Define the Solana window type
+declare global {
+    interface Window {
+        solana?: {
+            connect(): Promise<void>;
+            disconnect(): Promise<void>;
+            on(event: string, callback: () => void): void;
+            off(event: string, callback: () => void): void;
+            isPhantom?: boolean;
+            isConnected: boolean;
+            publicKey?: { toString(): string };
+            request(params: { method: string; params?: any[] }): Promise<any>;
+        };
+    }
+}
+
 class WalletManager {
     private wallet: MessageSignerWalletAdapter | null = null;
     private username: string = '';
+    private ws: WebSocket | null = null;
     
     constructor() {
         this.initializeWallet();
+        this.initializeWebSocket();
     }
 
     private async initializeWallet() {
-        // Initialize Solana connection
-        const connection = new Connection('https://api.mainnet-beta.solana.com');
-        
-        window.solana.on('connect', () => {
-            this.showNotification('Wallet connected!');
-            document.body.classList.add('wallet-connected');
-        });
+        if (typeof window !== 'undefined' && window.solana) {
+            window.solana.on('connect', () => {
+                this.showNotification('Wallet connected!');
+                document.body.classList.add('wallet-connected');
+                const connectBtn = document.querySelector('.connect-btn');
+                if (connectBtn) connectBtn.textContent = 'Options';
+            });
 
-        window.solana.on('disconnect', () => {
-            this.showNotification('Wallet disconnected');
-            document.body.classList.remove('wallet-connected');
-            this.username = '';
-        });
+            window.solana.on('disconnect', () => {
+                this.showNotification('Wallet disconnected');
+                document.body.classList.remove('wallet-connected');
+                const connectBtn = document.querySelector('.connect-btn');
+                if (connectBtn) connectBtn.textContent = 'Connect';
+            });
+        }
     }
 
     public async connect() {
         try {
-            // Create and show wallet selection modal
-            const modal = this.createWalletModal();
+            const modal = this.createInitialModal();
             document.body.appendChild(modal);
             setTimeout(() => modal.classList.add('show'), 0);
-
-            // Handle wallet selection
             return true;
         } catch (error) {
-            console.error('Failed to connect wallet:', error);
+            console.error('Failed to show modal:', error);
             return false;
         }
     }
 
-    private createWalletModal() {
+    private createInitialModal() {
         const modal = document.createElement('div');
         modal.className = 'wallet-modal';
         modal.innerHTML = `
@@ -101,8 +118,9 @@ class WalletManager {
 
     public async disconnect() {
         try {
-            await window.solana?.disconnect();
-            this.username = '';
+            if (typeof window !== 'undefined' && window.solana) {
+                await window.solana.disconnect();
+            }
         } catch (error) {
             console.error('Failed to disconnect wallet:', error);
         }
