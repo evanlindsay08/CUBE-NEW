@@ -56,12 +56,26 @@
     <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
     
     <!-- Add our scripts -->
+    <script>
+        // Define global namespace
+        window.CUBE = {
+            initialized: false
+        };
+    </script>
     <script src="wallet.js"></script>
     <script>
-        // Ensure WalletManager is initialized
-        if (typeof WalletManager === 'undefined') {
-            console.error('WalletManager failed to load');
+        // Wait for WalletManager to be available
+        function initializeApp() {
+            if (typeof WalletManager !== 'undefined') {
+                if (!window.CUBE.walletManager) {
+                    window.CUBE.walletManager = new WalletManager();
+                }
+                window.CUBE.initialized = true;
+            } else {
+                setTimeout(initializeApp, 100);
+            }
         }
+        initializeApp();
     </script>
     <script src="scripts.js"></script>
 </body>

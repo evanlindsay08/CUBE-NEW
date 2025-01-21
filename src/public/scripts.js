@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', async () => {
+    // Wait for initialization
+    while (!window.CUBE?.initialized) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
     // Wait for Phantom to be injected
     let attempts = 0;
     const maxAttempts = 50;
@@ -6,11 +11,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     while (!window.solana && attempts < maxAttempts) {
         await new Promise(resolve => setTimeout(resolve, 100));
         attempts++;
-    }
-
-    // Initialize WalletManager if it doesn't exist
-    if (!window.walletManager) {
-        window.walletManager = new WalletManager();
     }
 
     const connectBtn = document.querySelector('.connect-btn');
@@ -26,18 +26,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     connectBtn.addEventListener('click', async () => {
         try {
             if (!window.solana) {
-                window.walletManager.showNotification('Please install Phantom wallet');
+                window.CUBE.walletManager.showNotification('Please install Phantom wallet');
                 window.open('https://phantom.app/', '_blank');
                 return;
             }
-            if (!window.walletManager) {
-                console.error('WalletManager not initialized');
-                return;
-            }
-            await window.walletManager.connect();
+            await window.CUBE.walletManager.connect();
         } catch (error) {
             console.error('Connection error:', error);
-            window.walletManager.showNotification('Failed to connect wallet');
+            window.CUBE.walletManager.showNotification('Failed to connect wallet');
         }
     });
 
@@ -56,7 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function sendMessage() {
         const content = messageInput.value.trim();
         if (content) {
-            window.walletManager.sendMessage(content);
+            window.CUBE.walletManager.sendMessage(content);
             messageInput.value = '';
         }
     }
@@ -67,9 +63,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 if (!document.body.classList.contains('wallet-connected')) {
-                    window.walletManager.showNotification('Please connect wallet to use this feature');
+                    window.CUBE.walletManager.showNotification('Please connect wallet to use this feature');
                 } else {
-                    window.walletManager.showNotification('Please wait for the $CUBE contract to be validated');
+                    window.CUBE.walletManager.showNotification('Please wait for the $CUBE contract to be validated');
                 }
             });
         }

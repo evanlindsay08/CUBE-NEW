@@ -1,8 +1,9 @@
+// Define WalletManager class
 class WalletManager {
     constructor() {
         this.username = '';
-        this.initializeWallet();
         this.ws = null;
+        this.initializeWallet();
         this.initializeWebSocket();
     }
 
@@ -249,9 +250,6 @@ class WalletManager {
 }
 
 // Make WalletManager available globally
-window.WalletManager = WalletManager;
-
-// Create global instance
-if (!window.walletManager) {
-    window.walletManager = new WalletManager();
+if (typeof window !== 'undefined') {
+    window.WalletManager = WalletManager;
 } 
