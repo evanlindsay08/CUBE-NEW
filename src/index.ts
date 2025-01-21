@@ -30,11 +30,16 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 let connectedClients = new Set<WebSocket>();
 let messageHistory: ChatMessage[] = [];
 const userColors = new Map<string, string>();
 const MAX_MESSAGES = 100;
+
+// Health check endpoint
+app.get('/health', (req: Request, res: Response) => {
+    res.status(200).send('OK');
+});
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
@@ -47,6 +52,11 @@ app.get('/', (req: Request, res: Response) => {
 // Route for the chat page
 app.get('/chat', (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, 'public', 'chat.html'));
+});
+
+// Catch-all route to handle client-side routing
+app.get('*', (req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // WebSocket connection handling
@@ -119,6 +129,12 @@ function broadcastUserCount() {
         }
     });
 }
+
+// Error handling
+app.use((err: Error, req: Request, res: Response, next: Function) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
 
 server.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
