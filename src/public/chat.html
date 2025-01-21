@@ -23,7 +23,6 @@
                         </svg>
                     </div>
                 </a>
-                <a href="#" class="connect-btn">Connect</a>
             </div>
         </nav>
 
@@ -55,7 +54,7 @@
     <!-- Scripts at the bottom of body -->
     <script>
         // Global notification function
-        window.showNotification = function(message) {
+        function showNotification(message) {
             const notification = document.createElement('div');
             notification.className = 'notification';
             notification.textContent = message;
@@ -67,18 +66,47 @@
                 notification.classList.remove('show');
                 setTimeout(() => notification.remove(), 600);
             }, 2000);
+        }
+
+        // Global error handler
+        window.onerror = function(msg, url, line) {
+            console.error(`Error: ${msg}\nURL: ${url}\nLine: ${line}`);
+            showNotification('An error occurred');
+            return false;
         };
     </script>
     <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
     <script>
-        // Wait for Solana to be available
-        window.addEventListener('load', () => {
-            if (!window.solana) {
-                console.log('Please install Phantom wallet');
+        // Global notification function
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 0);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 600);
+            }, 2000);
+        }
+    </script>
+    <script src="wallet.js"></script>
+    <script>
+        // Initialize connect button
+        document.addEventListener('DOMContentLoaded', () => {
+            const connectBtn = document.querySelector('.connect-btn');
+            if (connectBtn) {
+                connectBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (window.walletManager) {
+                        window.walletManager.connect();
+                    }
+                });
             }
         });
     </script>
-    <script src="wallet.js"></script>
     <script src="scripts.js"></script>
 </body>
 </html> 

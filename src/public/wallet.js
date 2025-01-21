@@ -9,17 +9,17 @@ class WalletManager {
         }
     }
 
-    async initializeWallet() {
+    initializeWallet() {
         if (window.solana) {
             window.solana.on('connect', () => {
-                showNotification('Wallet connected!');
+                this.showNotification('Wallet connected!');
                 document.body.classList.add('wallet-connected');
                 const connectBtn = document.querySelector('.connect-btn');
                 if (connectBtn) connectBtn.textContent = 'Options';
             });
 
             window.solana.on('disconnect', () => {
-                showNotification('Wallet disconnected');
+                this.showNotification('Wallet disconnected');
                 document.body.classList.remove('wallet-connected');
                 const connectBtn = document.querySelector('.connect-btn');
                 if (connectBtn) connectBtn.textContent = 'Connect';
@@ -28,14 +28,51 @@ class WalletManager {
     }
 
     async connect() {
-        try {
-            const modal = this.createInitialModal();
-            document.body.appendChild(modal);
-            setTimeout(() => modal.classList.add('show'), 0);
-        } catch (error) {
-            console.error('Failed to show modal:', error);
-            showNotification('Failed to connect wallet');
-        }
+        const modal = document.createElement('div');
+        modal.className = 'wallet-modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h3>Choose an Option</h3>
+                <div class="wallet-list">
+                    <button class="wallet-option username">Set Username</button>
+                    <button class="wallet-option connect-wallet">Connect Wallet</button>
+                </div>
+                <button class="close-modal">✕</button>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+        setTimeout(() => modal.classList.add('show'), 0);
+
+        // Close button
+        modal.querySelector('.close-modal').addEventListener('click', () => {
+            modal.classList.remove('show');
+            setTimeout(() => modal.remove(), 300);
+        });
+
+        // Username button
+        modal.querySelector('.username').addEventListener('click', () => {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.remove();
+                this.promptUsername();
+            }, 300);
+        });
+
+        // Connect wallet button
+        modal.querySelector('.connect-wallet').addEventListener('click', async () => {
+            try {
+                if (!window.solana) {
+                    this.showNotification('Please install Phantom wallet');
+                    return;
+                }
+                modal.classList.remove('show');
+                setTimeout(() => modal.remove(), 300);
+                await window.solana.connect();
+            } catch (error) {
+                this.showNotification('Failed to connect wallet');
+            }
+        });
     }
 
     async disconnect() {
@@ -46,65 +83,6 @@ class WalletManager {
         } catch (error) {
             console.error('Failed to disconnect wallet:', error);
         }
-    }
-
-    createInitialModal() {
-        const modal = document.createElement('div');
-        modal.className = 'wallet-modal';
-        modal.innerHTML = `
-            <div class="modal-content">
-                <h3>Choose an Option</h3>
-                <div class="wallet-list">
-                    <button class="wallet-option username">
-                        <span>${this.username ? 'Change Username' : 'Set Username'}</span>
-                    </button>
-                    <button class="wallet-option connect-wallet">
-                        <span>${document.body.classList.contains('wallet-connected') ? 'Disconnect Wallet' : 'Connect Wallet'}</span>
-                    </button>
-                </div>
-                <button class="close-modal">✕</button>
-            </div>
-        `;
-
-        const closeBtn = modal.querySelector('.close-modal');
-        closeBtn?.addEventListener('click', () => {
-            modal.classList.remove('show');
-            setTimeout(() => modal.remove(), 300);
-        });
-
-        const usernameBtn = modal.querySelector('.username');
-        usernameBtn?.addEventListener('click', () => {
-            modal.classList.remove('show');
-            setTimeout(() => {
-                modal.remove();
-                this.promptUsername();
-            }, 300);
-        });
-
-        const walletBtn = modal.querySelector('.connect-wallet');
-        walletBtn?.addEventListener('click', async () => {
-            if (document.body.classList.contains('wallet-connected')) {
-                modal.classList.remove('show');
-                setTimeout(() => {
-                    modal.remove();
-                    this.disconnect();
-                }, 300);
-            } else {
-                if (!window.solana) {
-                    showNotification('Please install Phantom wallet');
-                    return;
-                }
-                try {
-                    modal.classList.remove('show');
-                    setTimeout(() => modal.remove(), 300);
-                    await window.solana.connect();
-                } catch (error) {
-                    showNotification('Failed to connect wallet');
-                }
-            }
-        });
-
-        return modal;
     }
 
     promptUsername() {
@@ -168,11 +146,17 @@ class WalletManager {
     }
 
     showNotification(message) {
-        if (typeof window.showNotification === 'function') {
-            window.showNotification(message);
-        } else {
-            console.log(message);
-        }
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => notification.classList.add('show'), 0);
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 600);
+        }, 2000);
     }
 
     initializeWebSocket() {
