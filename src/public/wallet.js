@@ -12,18 +12,39 @@ class WalletManager {
     async initializeWallet() {
         if (window.solana) {
             window.solana.on('connect', () => {
-                this.showNotification('Wallet connected!');
+                showNotification('Wallet connected!');
                 document.body.classList.add('wallet-connected');
                 const connectBtn = document.querySelector('.connect-btn');
                 if (connectBtn) connectBtn.textContent = 'Options';
             });
 
             window.solana.on('disconnect', () => {
-                this.showNotification('Wallet disconnected');
+                showNotification('Wallet disconnected');
                 document.body.classList.remove('wallet-connected');
                 const connectBtn = document.querySelector('.connect-btn');
                 if (connectBtn) connectBtn.textContent = 'Connect';
             });
+        }
+    }
+
+    async connect() {
+        try {
+            const modal = this.createInitialModal();
+            document.body.appendChild(modal);
+            setTimeout(() => modal.classList.add('show'), 0);
+        } catch (error) {
+            console.error('Failed to show modal:', error);
+            showNotification('Failed to connect wallet');
+        }
+    }
+
+    async disconnect() {
+        try {
+            if (window.solana) {
+                await window.solana.disconnect();
+            }
+        } catch (error) {
+            console.error('Failed to disconnect wallet:', error);
         }
     }
 
@@ -45,18 +66,14 @@ class WalletManager {
             </div>
         `;
 
-        // Add event listeners
         const closeBtn = modal.querySelector('.close-modal');
         closeBtn?.addEventListener('click', () => {
             modal.classList.remove('show');
             setTimeout(() => modal.remove(), 300);
         });
 
-        // Handle option selection
         const usernameBtn = modal.querySelector('.username');
-        const walletBtn = modal.querySelector('.connect-wallet');
-
-        usernameBtn.addEventListener('click', () => {
+        usernameBtn?.addEventListener('click', () => {
             modal.classList.remove('show');
             setTimeout(() => {
                 modal.remove();
@@ -64,7 +81,8 @@ class WalletManager {
             }, 300);
         });
 
-        walletBtn.addEventListener('click', async () => {
+        const walletBtn = modal.querySelector('.connect-wallet');
+        walletBtn?.addEventListener('click', async () => {
             if (document.body.classList.contains('wallet-connected')) {
                 modal.classList.remove('show');
                 setTimeout(() => {
@@ -73,7 +91,7 @@ class WalletManager {
                 }, 300);
             } else {
                 if (!window.solana) {
-                    this.showNotification('Please install Phantom wallet');
+                    showNotification('Please install Phantom wallet');
                     return;
                 }
                 try {
@@ -81,35 +99,12 @@ class WalletManager {
                     setTimeout(() => modal.remove(), 300);
                     await window.solana.connect();
                 } catch (error) {
-                    this.showNotification('Failed to connect wallet');
+                    showNotification('Failed to connect wallet');
                 }
             }
         });
 
         return modal;
-    }
-
-    async connect() {
-        try {
-            const modal = this.createInitialModal();
-            document.body.appendChild(modal);
-            setTimeout(() => modal.classList.add('show'), 0);
-            return true;
-        } catch (error) {
-            console.error('Failed to show modal:', error);
-            return false;
-        }
-    }
-
-    async disconnect() {
-        try {
-            if (window.solana) {
-                await window.solana.disconnect();
-                this.username = '';
-            }
-        } catch (error) {
-            console.error('Failed to disconnect wallet:', error);
-        }
     }
 
     promptUsername() {
@@ -173,17 +168,11 @@ class WalletManager {
     }
 
     showNotification(message) {
-        const notification = document.createElement('div');
-        notification.className = 'notification';
-        notification.textContent = message;
-        document.body.appendChild(notification);
-
-        setTimeout(() => notification.classList.add('show'), 0);
-
-        setTimeout(() => {
-            notification.classList.remove('show');
-            setTimeout(() => notification.remove(), 600);
-        }, 2000);
+        if (typeof window.showNotification === 'function') {
+            window.showNotification(message);
+        } else {
+            console.log(message);
+        }
     }
 
     initializeWebSocket() {
@@ -252,9 +241,4 @@ class WalletManager {
 }
 
 // Initialize wallet manager globally
-if (typeof window !== 'undefined') {
-    // Initialize wallet manager immediately
-    window.walletManager = new WalletManager();
-    // Signal that initialization is complete
-    window.walletManagerInitialized = true;
-} 
+window.walletManager = new WalletManager(); 

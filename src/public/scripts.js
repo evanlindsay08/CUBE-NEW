@@ -1,74 +1,88 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Wait for wallet manager to be initialized
-    const waitForWalletManager = setInterval(() => {
-        if (window.walletManager) {
-            clearInterval(waitForWalletManager);
-            initializeUI();
+    // Define global notification function if it doesn't exist
+    if (typeof window.showNotification !== 'function') {
+        window.showNotification = function(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 0);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 600);
+            }, 2000);
+        };
+    }
+
+    // Initialize WalletManager if it doesn't exist
+    if (!window.walletManager) {
+        window.walletManager = new WalletManager();
+    }
+
+    const connectBtn = document.querySelector('.connect-btn');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    
+    // Connect button handler
+    connectBtn?.addEventListener('click', async () => {
+        if (!window.solana) {
+            showNotification('Please install Phantom wallet');
+            window.open('https://phantom.app/', '_blank');
+            return;
         }
-    }, 100);
-
-    function initializeUI() {
-        const connectBtn = document.querySelector('.connect-btn');
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
-        
-        // Connect button handler
-        connectBtn?.addEventListener('click', async () => {
-            if (!window.solana) {
-                window.walletManager.showNotification('Please install Phantom wallet');
-                window.open('https://phantom.app/', '_blank');
-                return;
-            }
+        if (window.walletManager) {
             await window.walletManager.connect();
-        });
+        }
+    });
 
-        // Feature button handlers
-        document.querySelectorAll('.box-link').forEach(link => {
-            if (link.textContent === 'Art Agent' || link.textContent === 'Copy Writing Agent') {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (!document.body.classList.contains('wallet-connected')) {
-                        window.walletManager.showNotification('Please connect wallet to use this feature');
-                    } else {
-                        window.walletManager.showNotification('Please wait for the $CUBE contract to be validated');
-                    }
-                });
-            }
-        });
-
-        // Chat functionality (only on chat page)
-        if (messageInput && sendButton) {
-            messageInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
+    // Feature button handlers
+    document.querySelectorAll('.box-link').forEach(link => {
+        if (link.textContent === 'Art Agent' || link.textContent === 'Copy Writing Agent') {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (!document.body.classList.contains('wallet-connected')) {
+                    showNotification('Please connect wallet to use this feature');
+                } else {
+                    showNotification('Please wait for the $CUBE contract to be validated');
                 }
             });
-
-            sendButton.addEventListener('click', sendMessage);
-
-            function sendMessage() {
-                const content = messageInput.value.trim();
-                if (content) {
-                    window.walletManager.sendMessage(content);
-                    messageInput.value = '';
-                }
-            }
         }
+    });
 
-        // Navigation animation
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            if (link.getAttribute('href') !== '#') {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    document.querySelector('.console-box').style.animation = 'warpOut 0.6s cubic-bezier(.22,.61,.36,1) forwards';
-                    setTimeout(() => {
-                        window.location = link.getAttribute('href');
-                    }, 500);
-                });
+    // Chat functionality (only on chat page)
+    if (messageInput && sendButton) {
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
             }
         });
+
+        sendButton.addEventListener('click', sendMessage);
+
+        function sendMessage() {
+            const content = messageInput.value.trim();
+            if (content && window.walletManager) {
+                window.walletManager.sendMessage(content);
+                messageInput.value = '';
+            }
+        }
     }
+
+    // Navigation animation
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        if (link.getAttribute('href') !== '#') {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelector('.console-box').style.animation = 'warpOut 0.6s cubic-bezier(.22,.61,.36,1) forwards';
+                setTimeout(() => {
+                    window.location = link.getAttribute('href');
+                }, 500);
+            });
+        }
+    });
 });
 
 function showUsernameModal() {

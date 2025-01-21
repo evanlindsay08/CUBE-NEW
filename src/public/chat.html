@@ -52,31 +52,33 @@
         }
     </script>
 
-    <!-- Add Solana Web3 -->
-    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
-    
-    <!-- Add our scripts -->
+    <!-- Scripts at the bottom of body -->
     <script>
-        // Define global namespace
-        window.CUBE = {
-            initialized: false
+        // Global notification function
+        window.showNotification = function(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 0);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 600);
+            }, 2000);
         };
     </script>
-    <script src="wallet.js"></script>
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
     <script>
-        // Wait for WalletManager to be available
-        function initializeApp() {
-            if (typeof WalletManager !== 'undefined') {
-                if (!window.CUBE.walletManager) {
-                    window.CUBE.walletManager = new WalletManager();
-                }
-                window.CUBE.initialized = true;
-            } else {
-                setTimeout(initializeApp, 100);
+        // Wait for Solana to be available
+        window.addEventListener('load', () => {
+            if (!window.solana) {
+                console.log('Please install Phantom wallet');
             }
-        }
-        initializeApp();
+        });
     </script>
+    <script src="wallet.js"></script>
     <script src="scripts.js"></script>
 </body>
 </html> 
